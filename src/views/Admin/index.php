@@ -9,11 +9,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 
@@ -23,7 +23,7 @@
 
     <div id="Dashboard">
         <?php
-        include __DIR__."/layout/Dashboard/Dashboard.php";
+        include __DIR__ . "/layout/Dashboard/Dashboard.php";
         ?>
     </div>
 
