@@ -9,13 +9,12 @@ USE `COFFESHOP`;
 DROP TABLE IF EXISTS `ACCOUNTS`;
 
 CREATE TABLE IF NOT EXISTS `ACCOUNTS` (
-    ID                          INT             NOT NULL        AUTO_INCREMENT                 ,
-    USENAME                     VARCHAR(50)     NOT NULL                                       ,
-    PASSWORD                    VARCHAR(255)     NOT NULL                                       ,
+    ID          INT             NOT NULL AUTO_INCREMENT,
+    USERNAME    VARCHAR(50)     NOT NULL,
+    PASSWORD    VARCHAR(255)    NOT NULL,
+    ROLE        VARCHAR(50)     NOT NULL DEFAULT 'user',
     PRIMARY KEY (ID)
 );
-
-
 DROP TABLE IF EXISTS `USERS`;
 
 CREATE TABLE IF NOT EXISTS `USERS` (

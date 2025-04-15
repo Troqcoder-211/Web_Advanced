@@ -1,8 +1,9 @@
-INSERT INTO `ACCOUNTS` (`USENAME`, `PASSWORD`) VALUES
-('john_doe', 'password123'),
-('jane_smith', 'securepass'),
-('peter_jones', 'mysecret'),
-('alice_wonder', 'wonderland');
+INSERT INTO `ACCOUNTS` (`USERNAME`, `PASSWORD`, `ROLE`) VALUES
+('john_doe', 'password123', 'admin'),
+('jane_smith', 'securepass', 'user'),
+('peter_jones', 'mysecret', 'user'),
+('alice_wonder', 'wonderland', 'admin');
+
 
 INSERT INTO `USERS` (`ACCOUNTID`, `FULLNAME`, `ADDRESS`, `PHONE`, `EMAIL`, `DATEOFBIRTH`) VALUES
 (1, 'John Doe', '123 Main St', '123-456-7890', 'john.doe@example.com', '1990-01-15'),

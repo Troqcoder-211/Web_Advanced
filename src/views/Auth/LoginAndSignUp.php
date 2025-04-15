@@ -36,8 +36,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $account = $accountController->login($username, $password);
             if ($account) {
                 $_SESSION['user'] = $account->getUsername();
-                $message = "Đăng nhập thành công! Chào mừng " . htmlspecialchars($account->getUsername());
-                $success = true;
+                $_SESSION['role'] = $account->getRole();
+
+                if ($account->getRole() === 'admin') {
+                    $message = "Đăng nhập thành công! Chào mừng " . htmlspecialchars($account->getUsername());
+                    $success = true;
+                } else {
+                    $message = "Đăng nhập thành công! Chào mừng " . htmlspecialchars($account->getUsername());
+                    $success = true;
+                }
             } else {
                 $message = "Tên tài khoản hoặc mật khẩu không đúng!";
             }
@@ -143,16 +150,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     icon: "<?php echo $success ? 'success' : 'error'; ?>",
                     confirmButtonText: "OK"
                 }).then((result) => {
-                    if (result.isConfirmed) {
-                        <?php if ($success && $action === 'register') : ?>
-                            location.reload(); // Tải lại trang để người dùng có thể đăng nhập
-                        <?php elseif ($success && $action === 'login') : ?>
-                            window.location.href = "../Pages/Home.php"; // Chuyển hướng sau khi đăng nhập thành công
+                    if (result.isConfirmed && <?php echo $success ? 'true' : 'false'; ?>) {
+                        <?php if ($action === 'login' && isset($account)) : ?>
+                            <?php if ($account->getRole() === 'admin') : ?>
+                                window.location.href = "../Admin/index.php";
+                            <?php else : ?>
+                                window.location.href = "../Pages/Home.php";
+                            <?php endif; ?>
+                        <?php elseif ($action === 'register') : ?>
+                            location.reload();
                         <?php endif; ?>
                     }
                 });
             });
         <?php endif; ?>
+    </script>
+
     </script>
     <script>
         const mithSignupButton = document.getElementById('mith-signup-btn');
