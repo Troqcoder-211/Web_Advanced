@@ -1,19 +1,24 @@
 <?php
 
-require_once 'config/DatabaseConnection.php';
-require_once 'models/Import.php'; // Đảm bảo đường dẫn chính xác
-require_once 'models/ImportDetail.php'; // Đảm bảo đường dẫn chính xác
-require_once 'models/Ingredient.php'; // Đảm bảo đường dẫn chính xác
+require_once '/xampp/htdocs/web/Web_Advanced/src/config/DatabaseConnection.php';
+require_once '/xampp/htdocs/web/Web_Advanced/src/models/Import.php';
+require_once '/xampp/htdocs/web/Web_Advanced/src/models/ImportDetail.php';
+require_once '/xampp/htdocs/web/Web_Advanced/src/models/Ingredient.php';
 
-class ImportController {
+
+
+class ImportController
+{
     private $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = new DatabaseConnection();
     }
 
     // Lấy danh sách imports
-    public function getImports() {
+    public function getImports()
+    {
         $conn = $this->db->getConnection();
         $sql = "SELECT * FROM IMPORTS";
         $result = $conn->query($sql);
@@ -35,7 +40,8 @@ class ImportController {
     }
 
     // Lấy import theo ID
-    public function getImportById($id) {
+    public function getImportById($id)
+    {
         $conn = $this->db->getConnection();
         $sql = "SELECT * FROM IMPORTS WHERE ID = $id";
         $result = $conn->query($sql);
@@ -57,21 +63,23 @@ class ImportController {
     }
 
     // Thêm import mới
-    public function addImport(Import $import, $importDetails) {
+    public function addImport(Import $import, $importDetails)
+    {
         $conn = $this->db->getConnection();
-        $sql = "INSERT INTO IMPORTS (PRODUCERID, DATE, TOTAL) VALUES (?, ?, ?)";
+
+        $sql = "INSERT INTO IMPORTS (PRODUCERID, DATE, TOTAL) VALUES (?, CURRENT_DATE, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iss", $import->getProducerId(), $import->getDate(), $import->getTotal());
-
+        $stmt->bind_param("id", $import->getProducerId(), $import->getTotal());
         if ($stmt->execute()) {
-            $importId = $conn->insert_id; // Lấy ID vừa thêm
+            $importId = $conn->insert_id;
 
-            // Thêm import details
+            // Insert import details
             foreach ($importDetails as $detail) {
-                $sqlDetail = "INSERT INTO IMPORTDETAILS (IMPORTID, INGREDIENTID, QUANTITY, PRICE, TOTAL) VALUES (?, ?, ?, ?, ?)";
+                $sqlDetail = "INSERT INTO IMPORTDETAILS (IMPORTID, INGREDIENTID, QUANTITY, PRICE, TOTAL,UNITID) VALUES (?, ?, ?, ?, ?,?)";
                 $stmtDetail = $conn->prepare($sqlDetail);
-                $stmtDetail->bind_param("iidd", $importId, $detail['ingredientId'], $detail['quantity'], $detail['price'], $detail['total']);
+                $stmtDetail->bind_param("iiiddi", $importId, $detail['ingredientId'], $detail['quantity'], $detail['price'], $detail['total'], $detail['unitId']);
                 $stmtDetail->execute();
+                $stmtDetail->close();
             }
 
             $stmt->close();
@@ -84,8 +92,10 @@ class ImportController {
         }
     }
 
+
     // Cập nhật import
-    public function updateImport(Import $import) {
+    public function updateImport(Import $import)
+    {
         $conn = $this->db->getConnection();
         $sql = "UPDATE IMPORTS SET PRODUCERID = ?, DATE = ?, TOTAL = ? WHERE ID = ?";
         $stmt = $conn->prepare($sql);
@@ -103,7 +113,8 @@ class ImportController {
     }
 
     // Xóa import
-    public function deleteImport($id) {
+    public function deleteImport($id)
+    {
         $conn = $this->db->getConnection();
         $sql = "DELETE FROM IMPORTS WHERE ID = ?";
         $stmt = $conn->prepare($sql);
@@ -121,7 +132,8 @@ class ImportController {
     }
 
     // Lấy chi tiết import theo import ID
-    public function getImportDetails($importId) {
+    public function getImportDetails($importId)
+    {
         $conn = $this->db->getConnection();
         $sql = "SELECT * FROM IMPORTDETAILS WHERE IMPORTID = ?";
         $stmt = $conn->prepare($sql);
@@ -132,13 +144,14 @@ class ImportController {
         $details = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $detail = new ImportDetail(
+                $detail = new ImportDetails(
                     $row['ID'],
                     $row['IMPORTID'],
                     $row['INGREDIENTID'],
                     $row['QUANTITY'],
                     $row['PRICE'],
-                    $row['TOTAL']
+                    $row['TOTAL'],
+                    $row['UNITID']
                 );
                 $details[] = $detail;
             }
@@ -149,7 +162,8 @@ class ImportController {
     }
 
     // Lấy danh sách nguyên liệu
-    public function getIngredients() {
+    public function getIngredients()
+    {
         $conn = $this->db->getConnection();
         $sql = "SELECT * FROM INGREDIENTS";
         $result = $conn->query($sql);
@@ -171,5 +185,3 @@ class ImportController {
         return $ingredients;
     }
 }
-
-?>

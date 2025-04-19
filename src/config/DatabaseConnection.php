@@ -1,14 +1,16 @@
 <?php
 
-class DatabaseConnection {
+class DatabaseConnection
+{
     private $host = "localhost"; // Thay đổi nếu cần
     private $username = "root"; // Thay đổi bằng tên người dùng MySQL
-    private $password = "123456789"; // Thay đổi bằng mật khẩu MySQL
+    private $password = ""; // Thay đổi bằng mật khẩu MySQL
     private $database = "COFFESHOP"; // Tên cơ sở dữ liệu
 
     protected $connection;
 
-    public function __construct() {
+    public function __construct()
+    {
         if (!isset($this->connection)) {
             $this->connection = new mysqli($this->host, $this->username, $this->password, $this->database);
 
@@ -21,9 +23,8 @@ class DatabaseConnection {
         return $this->connection;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->connection;
     }
 }
-
-?>

@@ -1,17 +1,21 @@
 <?php
 
-require_once 'config/DatabaseConnection.php';
-require_once 'models/Producer.php'; // Đảm bảo Producer.php đã được tạo
 
-class ProducerController {
+require_once '/xampp/htdocs/web/Web_Advanced/src/config/DatabaseConnection.php';
+require_once '/xampp/htdocs/web/Web_Advanced/src/models/Producer.php'; //
+
+class ProducerController
+{
     private $connection;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new DatabaseConnection();
         $this->connection = $db->getConnection();
     }
 
-    public function getAllProducers() {
+    public function getAllProducers()
+    {
         $sql = "SELECT * FROM PRODUCERS";
         $result = $this->connection->query($sql);
 
@@ -30,7 +34,8 @@ class ProducerController {
         return $producers;
     }
 
-    public function getProducerById($id) {
+    public function getProducerById($id)
+    {
         $sql = "SELECT * FROM PRODUCERS WHERE ID = ?";
         $stmt = $this->connection->prepare($sql);
         $stmt->bind_param("i", $id);
@@ -49,7 +54,23 @@ class ProducerController {
         return null;
     }
 
-    public function addProducer(Producer $producer) {
+    public function getProducerNameById($id)
+    {
+        $sql = "SELECT PRODUCERNAME FROM PRODUCERS WHERE ID = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            return $row['PRODUCERNAME'];
+        }
+        return null;
+    }
+
+    public function addProducer(Producer $producer)
+    {
         $sql = "INSERT INTO PRODUCERS (PRODUCERNAME, ADDRESS, PHONE) VALUES (?, ?, ?)";
         $stmt = $this->connection->prepare($sql);
         $producerName = $producer->getProducerName();
@@ -65,7 +86,8 @@ class ProducerController {
         }
     }
 
-    public function updateProducer(Producer $producer) {
+    public function updateProducer(Producer $producer)
+    {
         $sql = "UPDATE PRODUCERS SET PRODUCERNAME = ?, ADDRESS = ?, PHONE = ? WHERE ID = ?";
         $stmt = $this->connection->prepare($sql);
         $producerName = $producer->getProducerName();
@@ -82,7 +104,8 @@ class ProducerController {
         }
     }
 
-    public function deleteProducer($id) {
+    public function deleteProducer($id)
+    {
         $sql = "DELETE FROM PRODUCERS WHERE ID = ?";
         $stmt = $this->connection->prepare($sql);
         $stmt->bind_param("i", $id);
@@ -94,5 +117,3 @@ class ProducerController {
         }
     }
 }
-
-?>

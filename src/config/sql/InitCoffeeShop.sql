@@ -1,4 +1,5 @@
 
+
 DROP DATABASE IF EXISTS `COFFESHOP`;
 
 CREATE DATABASE IF NOT EXISTS `COFFESHOP`;
@@ -10,7 +11,7 @@ DROP TABLE IF EXISTS `ACCOUNTS`;
 CREATE TABLE IF NOT EXISTS `ACCOUNTS` (
     ID                          INT             NOT NULL        AUTO_INCREMENT                 ,
     USENAME                     VARCHAR(50)     NOT NULL                                       ,
-    PASSWORD                    VARCHAR(50)     NOT NULL                                       ,
+    PASSWORD                    VARCHAR(255)     NOT NULL                                       ,
     PRIMARY KEY (ID)
 );
 
@@ -33,11 +34,12 @@ CREATE TABLE IF NOT EXISTS `USERS` (
 DROP TABLE IF EXISTS `PRODUCTS`;
 
 CREATE TABLE IF NOT EXISTS  `PRODUCTS` (
-    `ID`                          INT             NOT NULL           AUTO_INCREMENT              ,
+    `ID`                          INT             NOT NULL           AUTO_INCREMENT            ,
     RECIPEID                    INT             NOT NULL                                       ,
     PRODUCTNAME                 VARCHAR(50)     NOT NULL                                       ,
     PRICE                       DOUBLE          NOT NULL                                       ,
-    UNITID                      INT             NOT NULL                                       ,
+    LINKIMAGE                   VARCHAR(255)    NOT NULL                                      ,
+    UNITID                      INT                                                    ,
 
     PRIMARY KEY (`ID`)
 );
@@ -56,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `RECIPEDETAILS` (
     RECIPEID                    INT             NOT NULL                                       ,
     INGREDIENTID                INT             NOT NULL                                       ,
     QUANTITY                    DOUBLE          NOT NULL                                       ,
-    UNITID                      INT             NOT NULL                                       
+    UNITID                      INT                                                   
 );
 
 
@@ -66,7 +68,9 @@ CREATE TABLE IF NOT EXISTS `INGREDIENTS` (
     PRODUCERID                  INT             NOT NULL                                       ,
     INGREDIENTNAME              VARCHAR(50)     NOT NULL                                       ,
     QUANTITY                    DOUBLE          NOT NULL                                       ,
-    UNITID                      INT             NOT NULL                                       ,
+    UNITID                      INT                                                    ,
+    COST                      INT                                                    ,
+
     PRIMARY KEY (ID)
 );
 
@@ -75,6 +79,7 @@ DROP TABLE IF EXISTS `UNITS`;
 CREATE TABLE IF NOT EXISTS `UNITS` (
     ID                          INT             NOT NULL           AUTO_INCREMENT              ,
     TYPE                        VARCHAR(50)     NOT NULL                                       ,
+    DESCRIPTION                 VARCHAR(255)     NOT NULL                                      ,
     PRIMARY KEY (ID)
 );
 
@@ -109,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `IMPORTDETAILS` (
     QUANTITY                    DOUBLE          NOT NULL                                       ,
     PRICE                       DOUBLE          NOT NULL                                       ,
     TOTAL                       DOUBLE          NOT NULL                                       ,
-    UNITID                      INT             NOT NULL                                       ,
+    UNITID                      INT                                                    ,
     PRIMARY KEY (ID)
 );
 
@@ -121,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `ORDERS` (
     TOTAL                       DOUBLE          NOT NULL                                                 ,
     DATEOFORDER                 DATE            NOT NULL                                                 ,
     ORDERSTATUS                 ENUM('PENDING', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'PENDING'     ,
-    DISCOUNTID                  INT             NOT NULL                                                 ,
+    DISCOUNTID                  INT                                                              ,
     PRICEBEFOREDISCOUNT         DOUBLE          NOT NULL                                                 ,
     PRIMARY KEY (ID)
 );
@@ -194,9 +199,8 @@ ALTER TABLE `INGREDIENTS`
  
 ALTER TABLE `IMPORTDETAILS`
  ADD CONSTRAINT `FK_IMPORTS` FOREIGN KEY (IMPORTID) REFERENCES IMPORTS(ID),
- ADD CONSTRAINT `FK_INGREDIENTS_IMPORTDETAILS` FOREIGN KEY (INGREDIENTID) REFERENCES INGREDIENTS(ID),
- ADD CONSTRAINT `FK_UNITS_IMPORTDETAILS` FOREIGN KEY (UNITID) REFERENCES UNITS(ID);
-
+ ADD CONSTRAINT `FK_INGREDIENTS_IMPORTDETAILS` FOREIGN KEY (INGREDIENTID) REFERENCES INGREDIENTS(ID);
+ 
 ALTER TABLE `ORDERDETAILS`
  ADD CONSTRAINT `FK_ORDERS_ORDERDETAILS` FOREIGN KEY (ORDERID) REFERENCES ORDERS(ID),
  ADD CONSTRAINT `FK_PRODUCTS_ORDERDETAILS` FOREIGN KEY (PRODUCTID) REFERENCES PRODUCTS(ID);
@@ -220,4 +224,3 @@ ALTER TABLE `ORDERDETAILS`
 ALTER TABLE `PRODUCTREVIEWS`
  ADD CONSTRAINT `FK_USERS` FOREIGN KEY (USERID) REFERENCES USERS(ID),
  ADD CONSTRAINT `FK_PRODUCTS` FOREIGN KEY (PRODUCTID) REFERENCES PRODUCTS(ID);
-
